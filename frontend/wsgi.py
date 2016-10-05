@@ -4,6 +4,9 @@ from redis import StrictRedis
 from rq import Queue
 from random import randrange
 
+# use the kubernetes service environment variables to 
+#  connect to the redis queue
+
 REDIS_HOST =  os.environ['REDIS_MASTER_SERVICE_HOST']
 REDIS_PORT =  os.environ['REDIS_MASTER_SERVICE_PORT']
 application = Flask(__name__)
