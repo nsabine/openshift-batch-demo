@@ -1,16 +1,13 @@
+import os
 from flask import Flask, jsonify, request
 from redis import StrictRedis
 from rq import Queue
-
 from random import randrange
 
-#from settings import REDIS_HOST, REDIS_PORT
-
-
+REDIS_HOST =  os.environ['REDIS_MASTER_SERVICE_HOST']
+REDIS_PORT =  os.environ['REDIS_MASTER_SERVICE_PORT']
 application = Flask(__name__)
-
 q = Queue(connection=StrictRedis(host=REDIS_HOST, port=REDIS_PORT))
-
 
 @application.route('/')
 def get_randrange():
@@ -26,7 +23,6 @@ def get_randrange():
         return jsonify(job_id=job.get_id())
 
     return 'Stop value not specified!', 400
-
 
 @application.route("/results")
 @application.route("/results/<string:job_id>")
@@ -48,4 +44,3 @@ def get_results(job_id=None):
 if __name__ == '__main__':
     # Start server
     application.run(host='0.0.0.0', port=8080, debug=True)
-
