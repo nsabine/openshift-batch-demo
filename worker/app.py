@@ -1,3 +1,4 @@
+import os
 from redis import StrictRedis
 from rq import Connection, Worker
 
