@@ -1,5 +1,6 @@
 import os
-from redis import StrictRedis
+import redis
+#from redis import StrictRedis
 from rq import Connection, Worker
 
 # use the kubernetes service environment variables to 
