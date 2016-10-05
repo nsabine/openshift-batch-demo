@@ -33,7 +33,7 @@ tests={1:'monobitfrequencytest',\
 
 def add_job(inputbits):
   for i in tests:
-    job = q.enqueue(eval("randtest."+tests.get(i), inputbits, result_ttl=5000)
+    job = q.enqueue(eval("randtest."+tests.get(i)), inputbits, result_ttl=5000)
 
 
 if __name__ == '__main__':
