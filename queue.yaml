@@ -1,0 +1,108 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: redis
+      role: master
+      tier: backend
+    name: redis-master
+  spec:
+    tags:
+    - annotations:
+        openshift.io/imported-from: redis
+      from:
+        kind: DockerImage
+        name: redis
+      generation: null
+      importPolicy: {}
+      name: latest
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: redis
+      role: master
+      tier: backend
+    name: redis-master
+  spec:
+    replicas: 1
+    selector:
+      app: redis
+      deploymentconfig: redis-master
+      role: master
+      tier: backend
+    strategy:
+      resources: {}
+    template:
+      metadata:
+        annotations:
+          openshift.io/container.redis-master.image.entrypoint: '["docker-entrypoint.sh","redis-server"]'
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          app: redis
+          deploymentconfig: redis-master
+          role: master
+          tier: backend
+      spec:
+        containers:
+        - image: redis
+          name: redis-master
+          ports:
+          - containerPort: 6379
+            protocol: TCP
+          resources: {}
+          volumeMounts:
+          - mountPath: /data
+            name: redis-master-volume-1
+        volumes:
+        - emptyDir: {}
+          name: redis-master-volume-1
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - redis-master
+        from:
+          kind: ImageStreamTag
+          name: redis-master:latest
+      type: ImageChange
+  status: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: redis
+      role: master
+      tier: backend
+    name: redis-master
+  spec:
+    ports:
+    - name: 6379-tcp
+      port: 6379
+      protocol: TCP
+      targetPort: 6379
+    selector:
+      app: redis
+      deploymentconfig: redis-master
+      role: master
+      tier: backend
+  status:
+    loadBalancer: {}
+kind: List
+metadata: {}

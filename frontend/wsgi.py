@@ -7,12 +7,12 @@ from random import randrange
 from settings import REDIS_HOST, REDIS_PORT
 
 
-app = Flask(__name__)
+application = Flask(__name__)
 
 q = Queue(connection=StrictRedis(host=REDIS_HOST, port=REDIS_PORT))
 
 
-@app.route('/')
+@application.route('/')
 def get_randrange():
 
     if 'stop' in request.args:
@@ -28,8 +28,8 @@ def get_randrange():
     return 'Stop value not specified!', 400
 
 
-@app.route("/results")
-@app.route("/results/<string:job_id>")
+@application.route("/results")
+@application.route("/results/<string:job_id>")
 def get_results(job_id=None):
 
     if job_id is None:
@@ -47,5 +47,5 @@ def get_results(job_id=None):
 
 if __name__ == '__main__':
     # Start server
-    app.run(host='0.0.0.0', port=8080, debug=True)
+    application.run(host='0.0.0.0', port=8080, debug=True)
 
