@@ -4,7 +4,7 @@ from rq import Queue
 
 from random import randrange
 
-from settings import REDIS_HOST, REDIS_PORT
+#from settings import REDIS_HOST, REDIS_PORT
 
 
 application = Flask(__name__)
