@@ -95,7 +95,7 @@ items:
           image: testrandom
           command: ["/test"]
           imagePullPolicy: Always
-        restartPolicy: Never
+        restartPolicy: OnFailure
     triggers:
     - type: ImageChange
       imageChangeParams:
