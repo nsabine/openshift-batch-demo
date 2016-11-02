@@ -1,0 +1,110 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: testrandom
+    name: fedora
+  spec:
+    tags:
+    - annotations:
+        openshift.io/imported-from: fedora
+      from:
+        kind: DockerImage
+        name: fedora
+      generation: null
+      importPolicy: {}
+      name: latest
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: testrandom
+    name: testrandom
+  spec: {}
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: testrandom
+    name: testrandom
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: testrandom:latest
+    postCommit: {}
+    resources: {}
+    source:
+      contextDir: testu01
+      git:
+        uri: https://github.com/nsabine/openshift-batch-demo/
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: fedora:latest
+      type: Docker
+    triggers:
+    - github:
+        secret: SS1AWlO2uBwdK_hGxIgg
+      type: GitHub
+    - generic:
+        secret: 1zM-5eTu79iBhHBa-rzL
+      type: Generic
+    - type: ConfigChange
+    - imageChange: {}
+      type: ImageChange
+  status:
+    lastVersion: 0
+- apiVersion: batch/v1
+  kind: Job
+  metadata:
+    name: testrandom
+    labels:
+      app: testrandom
+  spec:
+    parallelism: 1
+    completions: 1
+    selector:
+      name: testrandom
+    template:
+      metadata:
+        name: testrandom
+        labels:
+          name: testrandom
+          app: testrandom
+      spec:
+        containers:
+        - name: testrandom
+          image: testrandom
+          command: ["/test"]
+          imagePullPolicy: Always
+        restartPolicy: Never
+    triggers:
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+          - testrandom
+        from:
+          kind: ImageStreamTag
+          name: testrandom:latest
+    - type: ConfigChange
+kind: List
+metadata: {}
